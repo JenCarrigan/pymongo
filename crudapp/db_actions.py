@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import json
 
 # setup the mongo connection
 client = MongoClient()
@@ -8,26 +9,49 @@ db = client.python
 collection = db.products
 
 def get_all_products():
+  # docs = list(collection.find({}))
   docs = collection.find({})
 
-  for doc in docs:
-    print(doc)
+  # regular way with for loop to remove ids
+  # go through each document object
+  # go through each item object
+  # don't return id information
+
+  # list_ = []
+  # for doc in docs:
+  #   for key, val in doc.items():
+  #     if key != '_id':
+  #       lst.append({key: val})
+  # return list_
+
+  # with list comprehension
+  return [{key: val for key, val in doc.items() if key != '_id'} for doc in docs]
 
 def get_product_by_name(name):
   doc = collection.find_one({"name": name})
-  print(doc)
+
+  if doc != None:
+    # dictionary comprehension
+    return {key: val for key, val in doc.items() if key != '_id'}
+  else:
+    return 'A product with that name does not exist.'
 
 def get_products_by_price(price):
   docs = collection.find({"price": price})
 
-  for doc in docs:
-    print(doc)
+  if docs != None:
+    return [{key: val for key, val in doc.items() if key != '_id'} for doc in docs]
+  else:
+    return 'No products with that price exist.'
 
 def post_product(product):
-  productId = collection.insert_one(product).inserted_id
-  print(f"{product} has been inserted with ID of {productId}")
+  print(product)
+  p = json.loads(product)
+
+  productId = collection.insert_one(p).inserted_id
+  return 'Product has been put in database.'
 
 def delete_product(name):
   collection.delete_one({"name": name})
-  print(f"deleted {name}")
+  return 'The product has been deleted.'
 
