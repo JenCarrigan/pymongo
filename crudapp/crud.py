@@ -29,8 +29,11 @@ while True:
 if selection == 1:
   docs = get_all_products()
 
-  for doc in docs:
-    print(doc)
+  if docs == []:
+    print('There are no products to display')
+  else:
+    for doc in docs:
+      print(doc)
 
 elif selection == 2:
   print('Enter the name of the product')

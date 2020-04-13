@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import json
+import pymongo
 
 # setup the mongo connection
 client = MongoClient()
@@ -7,6 +8,9 @@ client = MongoClient()
 # get the db and the collection we'll be working with
 db = client.python
 collection = db.products
+
+# create an index on sku number
+collection.create_index([('sku', pymongo.ASCENDING)], unique=True)
 
 def get_all_products():
   # docs = list(collection.find({}))
